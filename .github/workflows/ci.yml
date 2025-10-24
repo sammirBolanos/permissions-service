@@ -26,11 +26,5 @@ jobs:
         working-directory: ./demo
         run: mvn -B -ntp verify
 
-      - name: Upload surefire reports
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: surefire-reports
-          path: demo/target/surefire-reports
 
 
