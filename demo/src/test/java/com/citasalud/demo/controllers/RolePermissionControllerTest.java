@@ -1,5 +1,6 @@
 package com.citasalud.demo.controllers;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -9,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,7 +22,7 @@ import com.citasalud.demo.services.RolePermissionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(RolePermissionController.class)
-public class RolePermissionControllerTest {
+class RolePermissionControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,40 +33,43 @@ public class RolePermissionControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private List<RoleResponseDto> mockRolePermissions;
-
-    @BeforeEach
-    void setUp() {
-        mockRolePermissions = Arrays.asList(
+    @Test
+    void whenValidRoleId_thenReturnsRolePermissions() throws Exception {
+        // Arrange
+        Integer roleId = 1;
+        List<RoleResponseDto> mockRolePermissions = Arrays.asList(
             new RoleResponseDto("ADMIN", "CREATE_USER"),
             new RoleResponseDto("ADMIN", "DELETE_USER")
         );
-    }
-
-    @Test
-    void whenValidRoleId_thenReturnsRolePermissions() throws Exception {
-        Integer roleId = 1;
         when(rolePermissionService.permisoPorRol(roleId)).thenReturn(mockRolePermissions);
 
+        // Act & Assert
         mockMvc.perform(get("/rol/{idRol}", roleId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(mockRolePermissions)));
+
+        verify(rolePermissionService).permisoPorRol(roleId);
     }
 
     @Test
     void whenRoleHasNoPermissions_thenReturnsEmptyList() throws Exception {
+        // Arrange
         Integer roleId = 2;
         when(rolePermissionService.permisoPorRol(roleId)).thenReturn(Collections.emptyList());
 
+        // Act & Assert
         mockMvc.perform(get("/rol/{idRol}", roleId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("[]"));
+
+        verify(rolePermissionService).permisoPorRol(roleId);
     }
 
     @Test
     void whenInvalidRoleIdFormat_thenReturns400() throws Exception {
+        // Act & Assert
         mockMvc.perform(get("/rol/invalid"))
                 .andExpect(status().isBadRequest());
     }
