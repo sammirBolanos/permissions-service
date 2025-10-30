@@ -7,8 +7,8 @@ on:
     branches: [ 'develop', 'main' ]
 
 jobs:
-  build:
-    name: Build, test and package
+  test:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -22,9 +22,33 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Build and run tests (Maven)
+      - name: Run unit tests with coverage
         working-directory: ./demo
-        run: mvn -B -ntp verify
+        run: mvn -B -ntp clean test
 
+      - name: Generate JaCoCo Badge
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: demo/target/site/jacoco/jacoco.csv
+          badges-directory: .github/badges
+          generate-branches-badge: true
+          generate-summary: true
 
+      - name: Log coverage percentage
+        run: |
+          echo "Coverage = ${{ steps.jacoco.outputs.coverage }}"
+          echo "Branches = ${{ steps.jacoco.outputs.branches }}"
 
+      - name: Upload JaCoCo coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-report
+          path: demo/target/site/jacoco/
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: demo/target/surefire-reports
