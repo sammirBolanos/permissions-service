@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [ 'develop', 'main' ]
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
   unit-tests:
@@ -106,4 +107,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
         run: mvn -B -ntp sonar:sonar -Dsonar.projectKey=sammirBolanos_permissions-service
