@@ -287,35 +287,3 @@ public class RolePermission {
     // Métodos...
 }
 ```
-
-## 🔐 Seguridad
-
-### Variables de Entorno
-
-Las credenciales sensibles **NUNCA** deben incluirse en el código fuente. Usa variables de entorno:
-
-- `DB_URL` - URL de conexión a la base de datos
-- `DB_USERNAME` - Usuario de la base de datos
-- `DB_PASSWORD` - Contraseña de la base de datos
-
-### Buenas Prácticas
-
-- ✅ `.env` está en `.gitignore`
-- ✅ Usa `.env.example` como plantilla
-- ✅ Configura secrets en GitHub Actions
-- ✅ No hardcodees credenciales
-
-## 🤝 Contribuir
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-### Estándares de Código
-
-- Sigue las convenciones de Java
-- Escribe pruebas para código nuevo
-- Mantén la cobertura >80%
-- Asegúrate de que pase el Quality Gate de SonarCloud
